@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>About Us - Employee Management App</title>
+  <link rel="website icon" type="GIF" href="icon.gif">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body {
+      margin: 0;
+      /* font-family: 'Montserrat', sans-serif; */
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color:white;
+       backdrop-filter: brightness(0.4) blur(3px);
+      background-color: rgba(0, 0, 0, 0.6); /* Decreased brightness */
+      z-index: -1;
+      
+      
+    }
+
+    .team-section {
+      padding: 60px 20px;
+      min-height:80vh;
+      text-align: center;
+      background: transparent;
+      background: url('pexels-essow-k-251295-936722.jpg') no-repeat center center;
+      background-size: cover;
+      margin-bottom: 15px;
+      
+      
+    }
+
+    .team-section h3 {
+      margin-top: 10rem;
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 40px;
+      background: linear-gradient(45deg, #00ffe5, #0099ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .team-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+    }
+
+    .team-card {
+      perspective: 1000px;
+      transition: transform 0.4s ease;
+      width: 280px;
+      height: 320px;
+    }
+
+    .card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.7s;
+    }
+
+    .team-card:hover .card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-front, .card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      backface-visibility: hidden;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(12px);
+      padding: 30px 20px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+      transition: box-shadow 0.4s;
+    }
+
+    .card-front {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #0a0000;
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      color:#0a0000;
+    }
+
+    .team-card:hover {
+      animation: floatCard 3s infinite ease-in-out;
+    }
+
+    @keyframes floatCard {
+      0%, 100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    .card-front img {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid #00ffe5;
+      margin-bottom: 15px;
+    }
+   .overlay1 {
+  position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      
+}
+.map-container iframe {
+  width: 100%;
+  height: 400px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+}
+
+.social-icons {
+  margin-top: 10px;
+}
+
+.social-icons a {
+  margin: 0 8px;
+  font-size: 1.2rem;
+  color: white;
+  transition: transform 0.3s, color 0.3s;
+}
+
+.social-icons a:hover {
+  color: #00acee;
+  transform: scale(1.2);
+}
+.crud-project-wrapper {
+      display: flex;
+      flex-direction: row;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.25);
+      width: 95%;
+      max-width: 1200px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      margin: 40px auto;
+    }
+
+    .crud-project-wrapper:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 0 40px rgba(0, 255, 255, 0.4);
+    }
+
+    .crud-image {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .crud-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-right: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .project-card {
+      flex: 2;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .project-card h5 {
+      font-size: 1.5rem;
+      color: #72e1d1;
+      margin-bottom: 10px;
+      animation: fadeInDown 1s ease-in-out;
+    }
+
+    .project-card p {
+      font-size: 1rem;
+      line-height: 1.6;
+      animation: fadeIn 1.2s ease-in-out;
+    }
+
+    .tag {
+  display: inline-block;
+  background: #72e1d1;
+  color: #0f2027;
+  padding: 8px 14px;
+  border-radius: 14px;
+  font-size: 0.85rem;
+  font-weight: bold;
+  margin-top: 15px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s ease;
+  z-index: 1;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 10px #00ffffaa;
+}
+
+.tag::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(from 0deg, #00ffff 10%, transparent 30%, #00ffff 60%);
+  animation: rotateLight 6s linear infinite;
+  z-index: -2;
+  opacity: 0.5;
+  border-radius: 50%;
+}
+
+.tag::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  box-shadow: 0 0 12px #00ffff66;
+  opacity: 0;
+  animation: pulse 3s infinite ease-in-out;
+  z-index: -1;
+}
+
+.tag:hover {
+  background: #b2fff8;
+  color: #0f2027;
+  box-shadow: 0 0 20px #00ffff, 0 0 35px #00ffffcc;
+  border-color: #00ffff;
+}
+
+@keyframes rotateLight {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+}
+
+    @keyframes pop {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeInDown {
+      0% {
+        transform: translateY(-20px);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .crud-project-wrapper {
+        flex-direction: column;
+      }
+
+      .crud-image img {
+        border-right: none;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+      }
+    }
+    
+    .team-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+ 
+  width: fit-content;
+  margin: 8rem auto 2rem auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+  max-height: 4.5rem;
+}
+	
+	.team-text {
+	  font-size: 3.5rem;
+	  font-weight: bold;
+	  margin-bottom: 40px;
+	  background: linear-gradient(45deg, #00ffe5, #0099ff);
+	  -webkit-background-clip: text;
+	  -webkit-text-fill-color: transparent;
+	  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+	  text-align: center;
+	}
+    
+  </style>
+</head>
+<body>
+  <!-- 🌈 Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark gradient-bg px-4 py-2">
+    <span class="navbar-brand">Employee Management</span>
+    <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+      <li class="nav-item"><a class="nav-link" href="/Home"><i class="fas fa-home"></i> Home</a></li>
+      <li class="nav-item"><a class="nav-link" href="/Emp"><i class="fa fa-address-card"></i> Employees</a></li>
+      <li class="nav-item"><a class="nav-link active" href="/AboutUs"><i class="fas fa-users"></i> About Us</a></li>
+      <div class="profile" onclick="toggleDropdown()">
+        <span class="username nav-link">Profile</span>
+        <div class="dropdown" id="profileDropdown">
+           <div th:if="${session.loggedInUser == null}">
+    <a href="#" onclick="showForm('login')"><i class="fas fa-sign-in-alt"></i> Login</a>
+    <a href="#" onclick="showForm('signup')"><i class="fas fa-user-plus"></i> Signup</a>
+  </div>
+
+  <!-- If user IS logged in -->
+  <div th:if="${session.loggedInUser != null}">
+    <a href="#"><i class="fas fa-user-edit"></i> Edit Profile</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+        </div>
+      </div>
+    </ul>
+  </nav>
+<div class="overlay1"></div>
+ <!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+<section class="team-section">
+  <div class="team-glass">
+	  <p class="team-text">Meet Our Team</p>
+	</div>
+  <div class="team-row">
+
+    <!-- Jagannath -->
+    <div class="team-card" data-aos="zoom-in">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="Jaga1.jpg" alt="Jagannath Nayak" />
+          <h4>Jagannath Nayak</h4>
+          <p>Backend & Database Lead</p>
+        </div>
+        <div class="card-back">
+        <p>Co-operative & Positive</p>
+          <h4>Skills</h4>
+          <p>Spring-Boot, Java, SQL</p>
+          <h4>Contact</h4>
+          <p>jagannath@gmail.com</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/jagannath_01_?igsh=MWN2bzk2ZW5iZThieQ==" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/Jagannathnayak0?t=ZQ8oDbug0XVbrNI8dvwohQ&s=09" target="_blank"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/in/jagannath-nayak-36a499311/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Samikshya -->
+    <div class="team-card" data-aos="zoom-in">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="Samik.jpg" alt="Samikshya Das" />
+          <h4>Samikshya Das</h4>
+          <p>Frontend & UI/UX</p>
+        </div>
+        <div class="card-back">
+          <h4>Skills</h4>
+          <p>HTML, Tailwind, UX Design</p>
+          <h4>Contact</h4>
+          <p>samikshya@gmail.com</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/ssssamikshya?igsh=MTV1ZGFqbjdhMGY5Yw==" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://x.com/SamikshyaDas11?t=AHPqXViA7h3anmLmEUnFwg&s=09" target="_blank"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/in/samikshya-das-52b750267" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Suhana -->
+    <div class="team-card" data-aos="zoom-in">
+      <div class="card-inner">
+        <div class="card-front">
+          <img src="suhana.jpg" alt="Suhana Parween" />
+          <h4>Suhana Parween</h4>
+          <p>Testing, Debugging & Documentation</p>
+        </div>
+        <div class="card-back">
+          <h4>Skills</h4>
+          <p>Jest, Cypress, DevTools</p>
+          <h4>Contact</h4>
+          <p>suhana@gmail.com</p>
+          <div class="social-icons">
+            <a href="https://www.instagram.com/_suha._29?igsh=bG96NDF2ZjE0NWc4" target="_blank"><i class="fab fa-instagram"></i></a>
+            <a href="https://twitter.com/" target="_blank"><i class="fab fa-x-twitter"></i></a>
+            <a href="https://www.linkedin.com/in/suhana-parween" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="crud-project-wrapper">
+    <div class="crud-image" data-aos="fade-right">
+      <img src="images.jpeg" alt="Spring Boot Project">
+    </div>
+    <div class="project-card" data-aos="fade-left">
+      <h5>💼 Spring Boot CRUD App</h5>
+      <p>
+        A full-stack web application built using <strong>Spring Boot</strong> that performs 
+        <strong>Create, Read, Update, and Delete (CRUD)</strong> operations on user data stored 
+        in a relational database (<strong>MySQL/PostgreSQL</strong>).<br><br>
+        The project follows <strong>RESTful architecture</strong> and demonstrates clean code 
+        practices, layered architecture, and integration with front-end technologies or 
+        API testing tools like <strong>Postman</strong>.
+      </p>
+      <span class="tag">#Java #SpringBoot #SQL</span>
+    </div>
+  </div>
+
+  <!-- Map -->
+  
+  <div class="map-container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3740.6627441759956!2d85.81352597508629!3d20.35554658113059!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a19091813dab8d5%3A0xa033051ccddbbcbc!2sKalinga%20Institute%20of%20Industrial%20Technology!5e0!3m2!1sen!2sus!4v1744310656185!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+
+
+
+  <!-- 📜 Footer -->
+  <footer>
+    <div class="social-bar">
+      <div class="brand">EMPLOYEE <span>LIST</span></div>
+      <div class="social-icons">
+  <a href="https://www.instagram.com/" target="_blank">
+    <i class="fa-brands fa-instagram"></i>
+  </a>
+  <a href="https://wa.me/" target="_blank">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+  <a href="https://twitter.com/" target="_blank">
+    <i class="fa-brands fa-twitter"></i>
+  </a>
+  <a href="https://www.facebook.com/" target="_blank">
+    <i class="fa-brands fa-facebook"></i>
+  </a>
+  <a href="https://www.linkedin.com/in/" target="_blank">
+    <i class="fa-brands fa-linkedin"></i>
+  </a>
+</div>
+
+    </div>
+
+    <div class="footer-column">
+      <h3>Quick Links</h3>
+      <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Employees</a></li>
+        <li><a href="#">Bookings</a></li>
+        <li><a href="#">About Us</a></li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h3>Get Help</h3>
+      <ul>
+        <li>Faq</li>
+        <li>Recommended Topics</li>
+        <li>Help</li>
+        <li>Payment Options</li>
+        <li>Customer Care</li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h3>Contact Us</h3>
+      <ul>
+        <li>Team</li>
+        <li>MCA</li>
+        <li>Mob : +91 1234567890</li>
+        <li>KIIT University</li>
+      </ul>
+    </div>
+
+    <div class="footer-column">
+      <h3>Customer Feedback</h3>
+      <form class="review-form">
+        <input type="text" placeholder="Your Name" required />
+        <input type="email" placeholder="Your Email" required />
+        <textarea rows="4" placeholder="Your Review or Issue" required></textarea>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+
+    <div class="row3">
+      <div>Copyright © 2025 KIIT Team No. - 1 All rights are reserved</div>
+      <div>Privacy policy Terms & condition</div>
+      <div>Jagannath Nayak, Samikshya Das, Suhana Parween</div>
+    </div>
+  </footer>
+
+	
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
