@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Management App</title>
+  <link rel="website icon" type="GIF" href="icon.gif">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link
+  rel="stylesheet"
+  href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <!-- Font Awesome CDN -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-zP6B1QFvQmSILqSGjafMS5CrZlB8Erhkp4f0kF+dOHtW1P8L20Ak6gPKNXYIm2qkZYXknibBvJ1Uk1A3MeRWZw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@500&display=swap"
+      rel="stylesheet"
+    />
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-dark gradient-bg px-4 py-2">
+    <span class="navbar-brand">Employee Management</span>
+    <ul class="navbar-nav ms-auto d-flex align-items-center gap-3">
+      <li class="nav-item"><a class="nav-link" id="homeLink" href="/Home"><i class="fas fa-home"></i> Home</a></li>
+      <div th:if="${session.loggedInUser == null}">
+      <li class="nav-item"><a class="nav-link" id="employeesLink" onclick="showForm('login')" ><i class="fa fa-address-card"></i> Employees</a></li>
+      </div>
+      <div th:if="${session.loggedInUser != null}">
+      <li class="nav-item"><a class="nav-link" id="employeesLink" href="/Emp" ><i class="fa fa-address-card"></i> Employees</a></li>
+      </div>
+      <div th:if="${session.loggedInUser == null}">
+	  <li class="nav-item"><a class="nav-link" id="employeesLink"  onclick="showForm('login')" ><i class="fas fa-users"></i> About Us</a></li>
+	  </div>
+      <div th:if="${session.loggedInUser != null}">
+	  <li class="nav-item"><a class="nav-link" id="employeesLink" href="/AboutUs"><i class="fas fa-users"></i> About Us</a></li>
+	  </div>
+      <div class="profile" onclick="toggleDropdown()">
+    
+    <span class="username nav-link">Profile</span>
+<div class="dropdown" id="profileDropdown">
+
+  <!-- If user is NOT logged in -->
+  <div th:if="${session.loggedInUser == null}">
+    <a href="#" onclick="showForm('login')"><i class="fas fa-sign-in-alt"></i> Login</a>
+    <a href="#" onclick="showForm('signup')"><i class="fas fa-user-plus"></i> Signup</a>
+  </div>
+
+  <!-- If user IS logged in -->
+  <div th:if="${session.loggedInUser != null}">
+    <a href="#"><i class="fas fa-user-edit"></i> Edit Profile</a>
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
+</div>
+
+  </div>
+    </ul>
+  </nav>
+
+  <div class="container mt-4">
+    <div id="homeSection">
+        <div class="home-content">
+          <h1 class="floating-text">Welcome to Employee Management System</h1>
+          <p class="sub-text floating-text-2">Manage your employees smartly & efficiently</p>
+          <div th:if="${session.loggedInUser == null}">
+    		<button class="glass-btn" onclick="showForm('login')">
+            Login / Register
+          </button>
+  		</div>
+  		<div th:if="${session.loggedInUser != null}">
+  		<h2>Welcome, <span th:text="${session.loggedInUser.name}"></span>!</h2>
+    <a href="/AboutUs">
+    <button class="glass-btn">
+            Explor More
+          </button></a>
+          
+          
+  </div>
+        </div>
+      </div>
+      
+   <!--  <div id="employeeSection" style="display:none">
+      <div class="text-end mb-2">
+        <i class="fas fa-plus-circle add-icon" id="toggleBtn"></i>
+      </div>
+
+    
+
+
+      <div class="container mt-4">
+  🔍 Search Bar
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <input type="text" class="form-control" id="searchInput" placeholder="Search employees..." onkeyup="filterTable()">
+    </div>
+  </div>
+
+  🧾 Table
+   <div class="custom-table-wrapper p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+         <h5 class="mb-0 employee-title">Employee List</h5>
+          <input type="text" id="searchInput" class="form-control w-25" placeholder="Search...">
+        </div>
+      
+        <div class="table-responsive glass-table shadow-sm rounded">
+          <table class="table custom-table align-middle mb-0" id="employeeTableElement">
+            <thead class="bg-light text-dark">
+              <tr>
+                <th><input type="checkbox" id="selectAll" /></th>
+                <th scope="col" onclick="sortTable(1)">Name <span class="sort-icon">⬍</span></th>
+                <th scope="col" onclick="sortTable(2)">Gender <span class="sort-icon">⬍</span></th>
+                <th scope="col" class="email-cell" onclick="sortTable(3)">Email <span class="sort-icon">⬍</span></th>
+                <th scope="col" onclick="sortTable(4)">Age <span class="sort-icon">⬍</span></th>
+                <th scope="col" onclick="sortTable(5)">Phone <span class="sort-icon">⬍</span></th>
+                <th scope="col" class="text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="employeeTable">
+              <tr th:each="emp : ${employees}">
+                <td><input type="checkbox" class="row-checkbox" /></td> 
+                <td th:text="${emp.name}" class="fw-semibold text-primary"></td>
+                <td th:text="${emp.gender}"></td>
+                <td th:text="${emp.email}" th:title="${emp.email}" class="text-muted small email-cell"></td>
+                <td th:text="${emp.age}"></td>
+                <td th:text="${emp.phone}"></td>
+                <td class="text-center">
+                  <form th:action="@{'/deleteEmp/' + ${emp.id}}" method="post" style="display:inline;">
+                    <input type="hidden" name="_method" value="delete" />
+                    <button type="submit" class="btn btn-sm btn-outline-danger me-1" onclick="return confirm('Are you sure?')">
+                      <i class="fas fa-trash"></i>
+                    </button>
+                  </form>
+                  <button class="btn btn-sm btn-outline-success" th:onclick="'editEmployee(' + ${emp.id} + ')'">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div> -->
+
+</div>
+
+      <!-- Bootstrap Pagination -->
+      <nav>
+        <ul class="pagination pagination-sm justify-content-center mt-3" id="pagination"></ul>
+      </nav>
+      
+    </div>
+  </div>
+  
+    <!-- Overlay -->
+<div class="overlay" id="overlay"></div>
+  
+  <!-- Form Container -->
+<div class="container2" id="formContainer">
+    <i class="fas fa-times close-btn" id="closeBtn"></i>
+
+    <h2>User Registration</h2>
+
+    <form id="userForm" method="post" action="addEmp">
+        <input type="text" name="name" id="name" placeholder="Enter Name" required>
+        <input type="email" name="email" id="email" placeholder="Enter Email" required>
+
+        <div class="flex-row">
+            <input type="number" name="age" id="age" placeholder="Age" required>
+            <input type="text" name="phone" id="phone" placeholder="Phone" required>
+        </div>
+
+        <label style="color:#cbd5e1; margin-top:8px; text-align:center; display:block;">Gender</label>
+
+        <div class="gender-toggle">
+          <input type="radio" name="gender" id="male" value="Male" required>
+          <label for="male">Male</label>
+        
+          <input type="radio" name="gender" id="female" value="Female" required>
+          <label for="female">Female</label>
+        
+          <input type="radio" name="gender" id="other" value="Other" required>
+          <label for="other">Other</label>
+        
+          <div class="toggle-indicator"></div>
+        </div>
+
+        <button type="submit" class="adduser">Add User</button>
+    </form>
+</div>
+
+<!-- Login Form -->
+<div class="auth-form" id="loginForm">
+<form action="login" method="post">
+  <div class="close-btn" onclick="closeForm('loginForm')">&times;</div>
+  <h2>Login</h2>
+  <input type="text" name="email" placeholder="email">
+  <input type="password" name="password" placeholder="Password">
+  <div style="display:flex;justify-content:space-between;margin-bottom:10px;">
+    <label><input type="checkbox"> Remember Me</label>
+    <span class="link">Forgot Password?</span>
+  </div>
+  <button type="submit">Login</button>
+  <div class="link" onclick="switchForm('signup')">Register here</div>
+  <div class="social-icons">
+    <i class="fab fa-google"></i>
+    <i class="fab fa-facebook"></i>
+    <i class="fab fa-twitter"></i>
+  </div>
+  </form>
+</div>
+
+<!-- Signup Form -->
+<div class="auth-form" id="signupForm">
+<form method="post" action="signup">
+  <div class="close-btn" onclick="closeForm('signupForm')">&times;</div>
+  <h2>Signup</h2>
+ <div th:if="${signupError}" style="color:red;">
+    <p th:switch="${signupError}">
+        <span th:case="'emailExists'">Email already exists!</span>
+        <span th:case="'passwordMismatch'">Passwords do not match!</span>
+        <span th:case="*">Unknown signup error.</span>
+    </p>
+</div>
+ 
+  <input type="text" name="name" placeholder="Username" required>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="password" name="password" placeholder="Password" required>
+  <input type="password" name="cpassword" placeholder="Confirm Password" required>
+  <button type="submit">Signup</button>
+  <div class="link" onclick="switchForm('login')">Already have an account? Login</div>
+  <div class="social-icons">
+    <i class="fab fa-google"></i>
+    <i class="fab fa-facebook"></i>
+    <i class="fab fa-twitter"></i>
+  </div>
+  </form>
+</div>
+
+<!-- Toast Container -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999;">
+  <div id="signupToast" class="toast align-items-center text-white bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="4000">
+    <div class="d-flex">
+      <div class="toast-body" id="toastMessage">
+        <!-- Message comes here -->
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+
+  <footer>
+    <!-- Social Media Bar with AIR LINK -->
+<div class="social-bar">
+    <div class="brand">EMPLOYEE <span>LIST</span></div>
+    <div class="social-icons">
+        <a href="#"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#"><i class="fa-brands fa-whatsapp"></i></a>
+        <a href="#"><i class="fa-brands fa-twitter"></i></a>
+        <a href="#"><i class="fa-brands fa-facebook"></i></a>
+        <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+    </div>
+</div>
+<div class="footer-column">
+    <h3>Quick Links</h3>
+    <ul>
+        <li><a href="#">Home</a></li>
+        <li><a href="#">Employees</a></li>
+        <li><a href="#">Bookings</a></li>
+        <li><a href="#">About Us</a></li>
+    </ul>
+</div>
+<div class="footer-column">
+    <h3>Get Help</h3>
+        <ul >
+            <li>Faq</li>
+            <li>Recomended Topics</li>
+            <li>Help</li>
+            <li>Payment Options</li>
+            <li>Customer Care</li>
+        </ul>
+</div>
+<div class="footer-column">
+    <h3>Contact Us</h3>
+    <ul>
+        <li>Team</li>
+        <li>MCA</li>
+        <li>Mob : +91 1234567890</li>
+        <li>KIIT University</li>
+    </ul>
+</div>
+
+<div class="footer-column">
+    <h3>Customer Feedback</h3>
+    <form class="review-form">
+        <input type="text" placeholder="Your Name" required>
+        <input type="email" placeholder="Your Email" required>
+        <textarea rows="4" placeholder="Your Review or Issue" required></textarea>
+        <button type="submit">Submit</button>
+    </form>
+</div>
+<div class="row3">
+    <div>Copyright © 2025 SAM Team No. - 1 All rights are reserved</div>
+    <div>Privacy policy Terms & condition</div>
+    <div>Jagannath Nayak, Samikshya Das, Suhana Parween</div>
+</div>
+</footer>
+
+
+
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="script.js"></script>
+  
+  <script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const urlParams = new URLSearchParams(window.location.search);
+    const signupError = urlParams.get("signupError");
+    const signupSuccess = urlParams.get("signupSuccess");
+    const loginError  = urlParams.get("loginError");
+    const loginSuccess  = urlParams.get("loginSuccess");
+    const visitAgain  = urlParams.get("visitAgain");
+
+    let message = "";
+    let bgClass = "bg-danger"; // default for error
+
+    if (signupError) {
+      switch (signupError) {
+        case "emailExists":
+          message = "Email already exists!";
+          break;
+        case "passwordMismatch":
+          message = "Passwords do not match!";
+          break;
+        default:
+          message = "Unknown signup error.";
+      }
+    } else if (signupSuccess) {
+      message = "Signup successful! Welcome 🎉";
+      bgClass = "bg-success";
+    }
+    
+    if (loginError) {
+        switch (loginError) {
+          case "emailNotFound":
+            message = "Email Not Found!";
+            break;
+          case "wrongPassword":
+            message = "Passwords do not match!";
+            break;
+          default:
+            message = "Unknown signup error.";
+        }
+      } else if (loginSuccess) {
+        message = "Login successful! Welcome 🎉";
+        bgClass = "bg-success";
+      }
+	
+    if(visitAgain){
+    	 switch (visitAgain) {
+         case "Bye":
+           message = "Bye!";
+           bgClass = "bg-success";
+           break;
+    	 }
+    }
+    if (message) {
+      const toastElement = document.getElementById("signupToast");
+      toastElement.classList.remove("bg-danger", "bg-success");
+      toastElement.classList.add(bgClass);
+
+      document.getElementById("toastMessage").innerText = message;
+
+      const toast = new bootstrap.Toast(toastElement);
+      toast.show();
+    }
+  });
+</script>
+  
+</body>
+</html>
