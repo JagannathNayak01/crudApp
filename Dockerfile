@@ -18,7 +18,7 @@ WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
 # Expose the Spring Boot port
-EXPOSE 8081
+EXPOSE 8080
 
 # Environment variables for MySQL
 ENV SPRING_DATASOURCE_URL=jdbc:mysql://shuttle.proxy.rlwy.net:50033/railway
@@ -29,3 +29,4 @@ ENV SPRING_JPA_SHOW_SQL=true
 
 # Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
+
