@@ -2,7 +2,10 @@ version: "3.9"
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      cache_from:
+        - maven_cache
     container_name: crudapp
     ports:
       - "8080:8080"
@@ -27,4 +30,4 @@ services:
 
 volumes:
   db_data:
-
+  maven_cache:
