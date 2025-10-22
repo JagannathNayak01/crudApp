@@ -3,11 +3,9 @@ FROM maven:3.9.3-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-# Copy everything
 COPY pom.xml .
 COPY src ./src
 
-# Build the jar (downloads dependencies automatically)
 RUN mvn clean package -DskipTests -B
 
 # Stage 2: Runtime
