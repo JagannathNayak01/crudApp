@@ -1,3 +1,4 @@
+# Stage 1: Build
 FROM maven:3.9.3-eclipse-temurin-17 AS build
 
 WORKDIR /app
@@ -5,9 +6,10 @@ WORKDIR /app
 COPY pom.xml .
 COPY src ./src
 
-# Build jar (downloads all dependencies automatically)
+# Build jar
 RUN mvn clean package -DskipTests -B
 
+# Stage 2: Runtime
 FROM eclipse-temurin:17-jdk-alpine
 
 WORKDIR /app
