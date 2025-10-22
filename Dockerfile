@@ -1,66 +1,10 @@
-# -------------------------------
-# Step 1: Build the application
-# -------------------------------
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
-
-# Copy the entire project and build
 COPY . .
-RUN mvn clean package -DskipTests
+RUN mvn -B clean package -DskipTests
 
-# -------------------------------# -------------------------------
-# Step 1: Build the application
-# -------------------------------
-FROM maven:3.9.6-eclipse-temurin-17 AS build
-WORKDIR /app
-
-# Copy all source files
-COPY . .
-
-# Build Spring Boot app
-RUN mvn clean package -DskipTests
-
-# -------------------------------
-# Step 2: Run the application
-# -------------------------------
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
-
-# Copy jar from build stage
 COPY --from=build /app/target/*.jar app.jar
-
-# Expose the Spring Boot port
 EXPOSE 8081
-
-# Environment variables for MySQL
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://shuttle.proxy.rlwy.net:50033/railway
-ENV SPRING_DATASOURCE_USERNAME=root
-ENV SPRING_DATASOURCE_PASSWORD=sRaEGqfUCQlZhDhdqhBlqyPUPeZqasGE
-ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
-ENV SPRING_JPA_SHOW_SQL=true
-
-# Run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-# Step 2: Run the application
-# -------------------------------
-FROM eclipse-temurin:17-jdk
-WORKDIR /app
-
-# Copy jar from build stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Expose the Spring Boot port
-EXPOSE 8080
-
-# Environment variables for MySQL
-ENV SPRING_DATASOURCE_URL=jdbc:mysql://shuttle.proxy.rlwy.net:50033/railway
-ENV SPRING_DATASOURCE_USERNAME=root
-ENV SPRING_DATASOURCE_PASSWORD=sRaEGqfUCQlZhDhdqhBlqyPUPeZqasGE
-ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
-ENV SPRING_JPA_SHOW_SQL=true
-
-# Run the Spring Boot app
-ENTRYPOINT ["java", "-jar", "app.jar"]
-
-
+ENTRYPOINT ["java","-jar","app.jar"]
