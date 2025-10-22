@@ -3,19 +3,16 @@
 # -------------------------------
 FROM maven:3.9.6-eclipse-temurin-17 AS build
 
-# Set working directory
 WORKDIR /app
 
-# Copy only pom.xml first to leverage Docker cache
+# Copy pom.xml first to cache dependencies
 COPY pom.xml .
-
-# Download all dependencies offline (cached layer)
 RUN mvn dependency:go-offline -B
 
-# Now copy the full project source
+# Copy full project
 COPY . .
 
-# Build the Spring Boot application (skip tests for faster build)
+# Build Spring Boot app
 RUN mvn clean package -DskipTests
 
 # -------------------------------
@@ -23,14 +20,20 @@ RUN mvn clean package -DskipTests
 # -------------------------------
 FROM eclipse-temurin:17-jdk
 
-# Set working directory
 WORKDIR /app
 
-# Copy the jar built in the previous stage
+# Copy jar from build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port (match Spring Boot port in application.properties)
+# Expose the Spring Boot port
 EXPOSE 8081
 
-# Run the Spring Boot application
+# Environment variables for MySQL
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://shuttle.proxy.rlwy.net:50033/railway
+ENV SPRING_DATASOURCE_USERNAME=root
+ENV SPRING_DATASOURCE_PASSWORD=sRaEGqfUCQlZhDhdqhBlqyPUPeZqasGE
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO=update
+ENV SPRING_JPA_SHOW_SQL=true
+
+# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
