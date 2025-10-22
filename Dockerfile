@@ -1,25 +1,31 @@
-# ===== Stage 1: Build the app =====
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+# Use official Maven image for building
+FROM maven:3.9.3-eclipse-temurin-17 AS build
+
+# Set working directory
 WORKDIR /app
 
-# Copy pom.xml and download dependencies first (for caching)
+# Copy only pom.xml first to leverage Docker cache
 COPY pom.xml .
+
+# Download all dependencies (offline mode)
 RUN mvn dependency:go-offline -B
 
-# Copy source code
+# Copy the source code
 COPY src ./src
 
-# Package the app (skip tests to save time)
-RUN mvn -B clean package -DskipTests
+# Package the application
+RUN mvn package -DskipTests
 
-# ===== Stage 2: Run the app =====
-FROM eclipse-temurin:17-jdk
+# Use lightweight JDK image for running
+FROM eclipse-temurin:17-jdk-alpine
+
 WORKDIR /app
 
-# Copy built JAR from build stage
-COPY --from=build /app/target/*.jar app.jar
+# Copy the built jar from the build stage
+COPY --from=build /app/target/crudapp-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8081
+# Expose default Spring Boot port
+EXPOSE 8080
 
-# Run the app
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Run the application
+ENTRYPOINT ["java","-jar","app.jar"]
