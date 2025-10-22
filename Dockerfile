@@ -6,14 +6,16 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 # Set working directory
 WORKDIR /app
 
-# Copy pom.xml and download dependencies (cached)
-COPY pom.xml ./
+# Copy only pom.xml first to leverage Docker cache
+COPY pom.xml .
+
+# Download all dependencies offline (cached layer)
 RUN mvn dependency:go-offline -B
 
-# Copy the rest of the project files
-COPY . ./
+# Now copy the full project source
+COPY . .
 
-# Build the application (skip tests for faster build)
+# Build the Spring Boot application (skip tests for faster build)
 RUN mvn clean package -DskipTests
 
 # -------------------------------
@@ -24,10 +26,10 @@ FROM eclipse-temurin:17-jdk
 # Set working directory
 WORKDIR /app
 
-# Copy jar file from the previous build stage
+# Copy the jar built in the previous stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8081 (must match application.properties)
+# Expose port (match Spring Boot port in application.properties)
 EXPOSE 8081
 
 # Run the Spring Boot application
