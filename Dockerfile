@@ -7,11 +7,11 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 
 # Copy pom.xml and download dependencies (cached)
-COPY pom.xml .
+COPY pom.xml ./
 RUN mvn dependency:go-offline -B
 
 # Copy the rest of the project files
-COPY . .
+COPY . ./
 
 # Build the application (skip tests for faster build)
 RUN mvn clean package -DskipTests
@@ -27,9 +27,8 @@ WORKDIR /app
 # Copy jar file from the previous build stage
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080 (Spring Boot default)
+# Expose port 8081 (must match application.properties)
 EXPOSE 8081
 
-# ✅ Run the Spring Boot app (corrected)
+# Run the Spring Boot application
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
