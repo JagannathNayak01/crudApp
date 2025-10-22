@@ -3,16 +3,11 @@ FROM maven:3.9.3-eclipse-temurin-17 AS build
 
 WORKDIR /app
 
-# Copy only pom.xml first to leverage Docker layer caching
+# Copy everything at once (pom + src)
 COPY pom.xml .
-
-# Download dependencies into Maven local repo cache
-RUN mvn dependency:go-offline -B
-
-# Copy source code
 COPY src ./src
 
-# Build jar
+# Build jar and download all dependencies in one step
 RUN mvn clean package -DskipTests -B
 
 # Stage 2: Runtime
